@@ -1,0 +1,298 @@
+﻿@model List<EmployeePortal.Models.Domain.Employee>
+
+@{
+    ViewData["Title"] = "Employee List";
+    // Using IEnumerable<dynamic> to match your existing pattern
+    var departments = ViewBag.Departments as IEnumerable<dynamic>;
+    var types = ViewBag.EmployeeTypes as IEnumerable<dynamic>;
+
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int pageSize = ViewBag.PageSize ?? 5;
+    int totalRecords = ViewBag.TotalRecords ?? 0;
+}
+
+<style>
+        :root {
+                --premium-dark: #1a1c2c;
+                --premium-gold: #c5a059;
+                --premium-blue: #2c3e50;
+
+    }
+
+        body {
+                background-color: #f4f7f6;
+                font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    }
+
+        .main-header {
+                background: linear-gradient(135deg, var(--premium-dark) 0%, var(--premium-blue) 100%);
+                color: white;
+                padding: 2rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                margin-bottom: 2rem;
+
+    }
+
+        .glass-card {
+                background: white;
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+                overflow: hidden;
+
+    }
+
+        .table thead {
+                background-color: var(--premium-dark);
+                color: var(--premium-gold);
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+
+    }
+
+        .btn-premium-add {
+                background-color: var(--premium-gold);
+                color: white;
+                border: none;
+                transition: all 0.3s;
+
+    }
+
+            .btn-premium-add:hover {
+                    background-color: #b38f4d;
+                    color: white;
+                    transform: translateY(-2px);
+
+    }
+
+        .custom-badge {
+                padding: 0.5em 1em;
+                border-radius: 50px;
+                font-weight: 500;
+                font-size: 0.75rem;
+                display: inline-block;
+
+    }
+
+        .action-btn {
+                width: 35px;
+                height: 35px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                transition: 0.2s;
+                margin: 0 2px;
+
+    }
+
+            .action-btn:hover {
+                    transform: scale(1.1);
+
+    }
+</style>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show border-0 shadow-lg rounded-4 p-4 mb-4 animate__animated animate__fadeInDown" role="alert" style="background: linear-gradient(135deg, #d1e7dd 0%, #ffffff 100%);">
+        <div class="d-flex align-items-center">
+            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                <i class="fas fa-check fa-lg"></i>
+            </div>
+            <div>
+                <h6 class="alert-heading fw-bold mb-1">Action Successful</h6>
+                <p class="mb-0 small text-dark opacity-75">@TempData["SuccessMessage"]</p>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<div class="container mt-4">
+
+    <div class="main-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="mb-0 fw-bold"><i class="fas fa-id-badge me-2"></i>Staff Directory</h2>
+            <p class="mb-0 opacity-75 small text-uppercase tracking-wider">Corporate Resource Management</p>
+        </div>
+        <div class="text-end">
+            <div class="mb-2">
+                <span class="badge bg-white text-dark p-2 shadow-sm">
+                    <i class="fas fa-users text-muted me-1"></i> Total Records: @totalRecords
+                </span>
+            </div>
+            <a asp-action="Create" class="btn btn-premium-add px-4 shadow-sm">
+                <i class="fas fa-plus-circle me-1"></i> Add New Employee
+            </a>
+        </div>
+    </div>
+
+    <div class="card glass-card mb-4">
+        <div class="card-header bg-white py-3 border-0">
+            <h6 class="mb-0 fw-bold text-muted"><i class="fas fa-sliders-h me-2"></i>Refine Search</h6>
+        </div>
+        <div class="card-body pt-0">
+            <form method="get" asp-action="Index" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Employee Name</label>
+                    <input type="text" name="searchName" value="@ViewData["CurrentFilter"]" class="form-control form-control-sm border-0 bg-light" placeholder="Search...">
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold">Department</label>
+                    <select name="deptId" class="form-select form-select-sm border-0 bg-light">
+                        <option value="">All Departments</option>
+                        @if (departments != null)
+                        {
+                            foreach (var dept in departments)
+                            {
+                                <option value="@dept.Id" selected="@(dept.Id == (int?)ViewBag.SelectedDept)">@dept.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold">Employment Type</label>
+                    <select name="typeId" class="form-select form-select-sm border-0 bg-light">
+                        <option value="">All Types</option>
+                        @if (types != null)
+                        {
+                            foreach (var type in types)
+                            {
+                                <option value="@type.Id" selected="@(type.Id == (int?)ViewBag.SelectedType)">@type.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold">Per Page</label>
+                    <input type="number" name="itemsPerPage" class="form-control form-control-sm border-0 bg-light" value="@pageSize">
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-dark btn-sm w-100 shadow-sm" style="border-radius: 8px;">
+                        <i class="fas fa-filter me-1"></i> Apply Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card glass-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Employee Information</th>
+                        <th>Position</th>
+                        <th>Division</th>
+                        <th>Type</th>
+                        <th>Salary</th>
+                        <th>Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var emp in Model)
+                        {
+                            var dName = departments?.FirstOrDefault(d => d.Id == emp.DepartmentId)?.Name ?? "N/A";
+                            var tName = types?.FirstOrDefault(t => t.Id == emp.EmployeeTypeId)?.Name ?? "N/A";
+
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark">@emp.FullName</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">
+                                        <i class="fas fa-envelope me-1"></i>@emp.Email
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">
+                                        <i class="fas fa-phone me-1"></i>@(string.IsNullOrEmpty(emp.Phone) ? "Not Provided" : emp.Phone)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">@emp.Designation</div>
+                                    <div class="text-muted x-small" style="font-size: 0.65rem;">Joined: @emp.HireDate.ToString("dd MMM yyyy")</div>
+                                </td>
+                                <td><span class="custom-badge bg-light text-primary border">@dName</span></td>
+                                <td><span class="custom-badge bg-light text-dark border">@tName</span></td>
+                                <td class="fw-bold text-success">₹ @emp.Salary.ToString("N2")</td>
+                                <td>
+                                    @if (emp.IsActive)
+                                    {
+                                        <span class="badge bg-success-subtle text-success custom-badge" style="background-color: #e8f5e9;">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger custom-badge" style="background-color: #ffebee;">Inactive</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@emp.EmployeeId" class="action-btn btn btn-outline-info border-0" title="View"><i class="fas fa-eye"></i></a>
+                                        <a asp-action="Edit" asp-route-id="@emp.EmployeeId" class="action-btn btn btn-outline-warning border-0" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <a asp-action="Delete" asp-route-id="@emp.EmployeeId" class="action-btn btn btn-outline-danger border-0" onclick="return confirm('Secure Delete: Are you sure?')" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="py-4">
+                                    <i class="fas fa-search-minus fa-4x text-muted mb-3 opacity-25"></i>
+                                    <h4 class="text-muted fw-bold">No Records Found</h4>
+                                    <p class="text-muted small mb-4">We couldn't find any employees matching your current filters.</p>
+                                    <a asp-action="Index" class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm">
+                                        <i class="fas fa-redo me-2"></i>Reset All Filters
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <nav class="mt-4 pb-5">
+        </nav>
+    }
+
+
+    <nav class="mt-4 pb-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link border-0 shadow-sm mx-1 rounded text-dark" href="?page=1&pageSize=@pageSize&searchName=@ViewData["CurrentFilter"]&deptId=@ViewBag.SelectedDept&typeId=@ViewBag.SelectedType">First</a>
+            </li>
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link border-0 shadow-sm mx-1 rounded text-dark" href="?page=@(currentPage - 1)&pageSize=@pageSize&searchName=@ViewData["CurrentFilter"]&deptId=@ViewBag.SelectedDept&typeId=@ViewBag.SelectedType">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+
+            <li class="page-item active shadow">
+                <span class="page-link border-0 shadow-sm mx-1 rounded" style="background-color: var(--premium-dark);">@currentPage</span>
+            </li>
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link border-0 shadow-sm mx-1 rounded text-dark" href="?page=@(currentPage + 1)&pageSize=@pageSize&searchName=@ViewData["CurrentFilter"]&deptId=@ViewBag.SelectedDept&typeId=@ViewBag.SelectedType">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link border-0 shadow-sm mx-1 rounded text-dark" href="?page=@totalPages&pageSize=@pageSize&searchName=@ViewData["CurrentFilter"]&deptId=@ViewBag.SelectedDept&typeId=@ViewBag.SelectedType">Last</a>
+            </li>
+        </ul>
+        <p class="text-center text-muted small mt-2">Showing page @currentPage of @totalPages</p>
+    </nav>
+</div> 

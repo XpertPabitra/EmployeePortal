@@ -1,0 +1,198 @@
+﻿@model EmployeePortal.Models.Domain.Employee
+
+@{
+    ViewData["Title"] = "Employee Profile";
+
+    // Resolving Names for a classy look
+    var departments = ViewBag.Departments as IEnumerable<dynamic>;
+    var types = ViewBag.EmployeeTypes as IEnumerable<dynamic>;
+    var dName = departments?.FirstOrDefault(d => d.Id == Model.DepartmentId)?.Name ?? "N/A";
+    var tName = types?.FirstOrDefault(t => t.Id == Model.EmployeeTypeId)?.Name ?? "N/A";
+}
+
+<style>
+    :root {
+        --premium-indigo: #1a1c2c;
+        --accent-gold: #c5a059;
+        --soft-bg: #f0f2f5;
+    }
+
+    body {
+        background-color: var(--soft-bg);
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+    .profile-card {
+        border: none;
+        border-radius: 25px;
+        background: #ffffff;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-top: 4rem;
+        margin-bottom: 4rem;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--premium-indigo) 0%, #2c3e50 100%);
+        padding: 3.5rem 2rem;
+        color: white;
+        text-align: center;
+        position: relative;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto -60px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        z-index: 2;
+        position: relative;
+    }
+
+        .profile-avatar i {
+            font-size: 3.5rem;
+            color: var(--premium-indigo);
+        }
+
+    .content-area {
+        padding: 80px 3rem 3rem;
+    }
+
+    .info-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #94a3b8;
+        letter-spacing: 1.5px;
+        margin-bottom: 0.3rem;
+        display: block;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-pill {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 15px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+    }
+
+        .stat-pill:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+
+    .btn-action-group .btn {
+        border-radius: 12px;
+        padding: 0.8rem 1.8rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .status-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+    }
+</style>
+
+<div class="container" style="max-width: 900px;">
+    <div class="card profile-card">
+        <div class="profile-header">
+            @if (Model.IsActive)
+            {
+                <span class="status-badge"><i class="fas fa-circle text-success me-1"></i> ACTIVE STATUS</span>
+            }
+            else
+            {
+                <span class="status-badge"><i class="fas fa-circle text-danger me-1"></i> INACTIVE</span>
+            }
+            <h1 class="fw-bold mb-1">@Model.FullName</h1>
+            <p class="opacity-75 lead mb-0">@Model.Designation</p>
+            <div class="mt-2 small text-uppercase opacity-50 tracking-widest">Employee ID: #@Model.EmployeeId</div>
+        </div>
+
+        <div class="profile-avatar">
+            <i class="fas fa-user-tie"></i>
+        </div>
+
+        <div class="content-area">
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="fas fa-id-card me-2 text-primary"></i>Contact & Role</h5>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <span class="info-label">Email Address</span>
+                            <div class="info-value">@Model.Email</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="info-label">Phone Contact</span>
+                            <div class="info-value">@(string.IsNullOrEmpty(Model.Phone) ? "Unlisted" : Model.Phone)</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="info-label">Department</span>
+                            <div class="info-value text-primary">@dName</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="info-label">Gender</span>
+                            <div class="info-value">@Model.Gender</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="fas fa-chart-line me-2 text-primary"></i>Employment Data</h5>
+
+                    <div class="stat-pill mb-3">
+                        <span class="info-label">Contract Type</span>
+                        <div class="info-value mb-0">@tName</div>
+                    </div>
+
+                    <div class="stat-pill mb-3">
+                        <span class="info-label">Monthly Compensation</span>
+                        <div class="info-value mb-0 text-success">₹ @Model.Salary.ToString("N2")</div>
+                    </div>
+
+                    <div class="stat-pill">
+                        <span class="info-label">Member Since</span>
+                        <div class="info-value mb-0">@Model.HireDate.ToString("MMMM dd, yyyy")</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5 pt-4 border-top btn-action-group">
+                <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-arrow-left me-2"></i>Directory
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.EmployeeId" class="btn btn-primary px-5 shadow">
+                    <i class="fas fa-edit me-2"></i>Modify Profile
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.EmployeeId" class="btn btn-outline-danger">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center pb-5 text-muted">
+        <small class="text-uppercase tracking-tighter" style="font-size: 0.6rem;">Enterprise Security Protocol: Record Access Logged</small>
+    </div>
+</div>

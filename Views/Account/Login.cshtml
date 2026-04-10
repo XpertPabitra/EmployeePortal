@@ -1,0 +1,277 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERMS Portal | Secure Authentication</title>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <style>
+        :root {
+            --ent-navy: #0f172a;
+            --ent-accent: #c5a059;
+            --ent-border: #e2e8f0;
+            --soft-slate: #f8fafc;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+        }
+
+        .auth-wrapper {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .brand-side {
+            flex: 1.2;
+            background: var(--ent-navy);
+            background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%), 
+                              url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 5rem;
+            color: white;
+        }
+
+        .logo-box {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box i { color: var(--ent-accent); }
+
+        .form-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 3rem;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .field-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .field-container i.main-icon {
+            position: absolute;
+            left: 1.1rem;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .form-control-ent {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 3rem;
+            border: 1.5px solid var(--ent-border);
+            border-radius: 10px;
+            background: var(--soft-slate);
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-control-ent:focus {
+            outline: none;
+            border-color: var(--ent-navy);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.06);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1.1rem;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .alert-ent {
+            background: #fff1f2;
+            border: 1px solid #fda4af;
+            color: #be123c;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-ent {
+            background: var(--ent-navy);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-ent:hover {
+            background: #000;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        @@media (max-width: 992px) {
+            .brand-side { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-wrapper">
+        <div class="brand-side animate__animated animate__fadeIn">
+            <div class="brand-header">
+                <div class="logo-box">
+                    <i class="fas fa-layer-group fa-lg"></i>
+                    <span>ERMS <span style="color: var(--ent-accent);">PORTAL</span></span>
+                </div>
+            </div>
+
+            <div class="brand-content">
+                <h1 class="display-3 fw-bold">Enterprise <br /> Infrastructure <br /> Access.</h1>
+                <p class="lead opacity-75 mt-3">Authorized personnel only. All access is logged and monitored via system audit logs.</p>
+            </div>
+
+            <div class="brand-footer">
+                <p class="mb-0">© 2026 MCC IT Solutions.</p>
+                <p class="small opacity-50">Security Protocol v4.0.2</p>
+            </div>
+        </div>
+
+        <div class="form-side">
+            <div class="login-box animate__animated animate__fadeInRight">
+                <h2>Admin Identity</h2>
+                <p class="text-muted mb-5">Please provide your credentials to access the directory.</p>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert-ent animate__animated animate__shakeX">
+                        <i class="fas fa-shield-virus fa-lg"></i>
+                        <span>@ViewBag.Error</span>
+                    </div>
+                }
+
+                <form asp-action="Login" asp-controller="Account" method="post" id="loginForm">
+                    <div class="input-wrapper">
+                        <label class="form-label">System Username</label>
+                        <div class="field-container">
+                            <i class="fas fa-user-circle main-icon"></i>
+                            <input type="text" name="Username" class="form-control-ent" placeholder="Username" required />
+                        </div>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label class="form-label">Access Passcode</label>
+                        <div class="field-container">
+                            <i class="fas fa-lock main-icon"></i>
+                            <input type="password" id="passwordField" name="Password" class="form-control-ent" placeholder="••••••••" required />
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="rem">
+                            <label class="form-check-label small text-muted" for="rem">Trust this terminal</label>
+                        </div>
+                        
+                        <a asp-action="ForgotPassword" asp-controller="Account" class="small text-decoration-none fw-bold" style="color: var(--ent-navy);">
+                            System Recovery
+                        </a>
+                    </div>
+
+                    <button type="submit" class="btn btn-ent">
+                        Authorize Connection <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </form>
+
+                <div class="mt-5 pt-5 text-center border-top">
+                    <small class="text-muted text-uppercase tracking-widest" style="font-size: 0.65rem;">
+                        Secure Node: @Environment.MachineName.ToUpper()
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById("passwordField");
+            const eyeIcon = document.getElementById("eyeIcon");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
+</body>
+</html>

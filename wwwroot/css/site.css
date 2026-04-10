@@ -1,0 +1,25 @@
+/* Matching the professional blue and green theme */
+.bg-primary {
+    background-color: #0d6efd !important;
+}
+
+.btn-success {
+    background-color: #198754 !important;
+    border: none;
+}
+
+.card-header {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Custom styles for the table icons */
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.table thead {
+    background-color: #0d6efd;
+    color: white;
+}

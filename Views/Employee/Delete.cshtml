@@ -1,0 +1,175 @@
+﻿@model EmployeePortal.Models.Domain.Employee
+
+@{
+    ViewData["Title"] = "Secure Delete";
+    // Lookup names for display
+    var departments = ViewBag.Departments as IEnumerable<dynamic>;
+    var types = ViewBag.EmployeeTypes as IEnumerable<dynamic>;
+    var dName = departments?.FirstOrDefault(d => d.Id == Model.DepartmentId)?.Name ?? "N/A";
+    var tName = types?.FirstOrDefault(t => t.Id == Model.EmployeeTypeId)?.Name ?? "N/A";
+}
+
+<style>
+    :root {
+        --premium-dark: #1a1c2c;
+        --danger-deep: #dc3545;
+        --soft-gray: #f8f9fa;
+    }
+
+    body {
+        background-color: #f4f7f6;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+    .delete-container {
+        max-width: 700px;
+        margin: 4rem auto;
+    }
+
+    .delete-card {
+        background: white;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+        padding: 2.5rem;
+        text-align: center;
+        border-bottom: 1px solid #fee2e2;
+    }
+
+    .warning-icon {
+        font-size: 3.5rem;
+        color: var(--danger-deep);
+        margin-bottom: 1rem;
+    }
+
+    .employee-detail-grid {
+        background-color: var(--soft-gray);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 1.5rem 0;
+        border: 1px solid #e9ecef;
+    }
+
+    .detail-item {
+        margin-bottom: 1rem;
+    }
+
+    .detail-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #6c757d;
+        font-weight: 700;
+        letter-spacing: 1px;
+        display: block;
+    }
+
+    .detail-value {
+        font-size: 0.95rem;
+        color: var(--premium-dark);
+        font-weight: 600;
+    }
+
+    .btn-delete-confirm {
+        background-color: var(--danger-deep);
+        color: white;
+        border: none;
+        padding: 0.8rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-delete-confirm:hover {
+            background-color: #bb2d3b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+        }
+
+    .btn-cancel {
+        background-color: #eee;
+        color: var(--premium-dark);
+        border: none;
+        padding: 0.8rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+</style>
+
+<div class="container delete-container">
+    <div class="card delete-card">
+        <div class="delete-header">
+            <div class="warning-icon"><i class="fas fa-exclamation-circle"></i></div>
+            <h2 class="fw-bold text-dark mb-1">Confirm Termination</h2>
+            <p class="text-muted mb-0 px-md-5">Verify the information below before proceeding. Deleting this profile will remove all associated historical data.</p>
+        </div>
+
+        <div class="card-body px-4 px-md-5">
+            <div class="employee-detail-grid shadow-sm">
+                <div class="row">
+                    <div class="col-12 mb-4 d-flex align-items-center">
+                        <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center me-3" style="width:65px; height:65px;">
+                            <i class="fas fa-user-tie text-muted fa-2x"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold text-primary">@Model.FullName</h3>
+                            <span class="badge bg-danger-subtle text-danger border border-danger">Emp ID: #@Model.EmployeeId</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 detail-item">
+                        <span class="detail-label">Designation</span>
+                        <span class="detail-value">@Model.Designation</span>
+                    </div>
+                    <div class="col-md-6 detail-item">
+                        <span class="detail-label">Official Email</span>
+                        <span class="detail-value text-break">@Model.Email</span>
+                    </div>
+                    <div class="col-md-6 detail-item">
+                        <span class="detail-label">Department</span>
+                        <span class="detail-value">@dName</span>
+                    </div>
+                    <div class="col-md-6 detail-item">
+                        <span class="detail-label">Contract Type</span>
+                        <span class="detail-value">@tName</span>
+                    </div>
+                    <div class="col-md-6 detail-item">
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value">@(string.IsNullOrEmpty(Model.Phone) ? "Not Provided" : Model.Phone)</span>
+                    </div>
+                    <div class="col-md-6 detail-item">
+                        <span class="detail-label">Hire Date</span>
+                        <span class="detail-value">@Model.HireDate.ToString("dd MMM yyyy")</span>
+                    </div>
+                    <div class="col-md-6 detail-item">
+                        <span class="detail-label">Salary (Monthly)</span>
+                        <span class="detail-value text-success">₹ @Model.Salary.ToString("N2")</span>
+                    </div>
+                    <div class="col-md-6 detail-item">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value">@(Model.IsActive ? "Active" : "Inactive")</span>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="DeletePost" method="post" class="text-center mt-4">
+                <input type="hidden" asp-for="EmployeeId" />
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-action="Index" class="btn-cancel d-flex align-items-center">Cancel</a>
+                    <button type="submit" class="btn-delete-confirm shadow">
+                        <i class="fas fa-trash-alt me-2"></i> Delete Employee
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 pb-4">
+        <small class="text-muted"><i class="fas fa-user-shield me-1"></i> Data Protection Protocol Active</small>
+    </div>
+</div>
