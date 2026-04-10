@@ -19,7 +19,7 @@ The system utilizes a **"Classy Node"** aesthetic, featuring:
 
 ## 🛡️ Security Infrastructure
 * **BaseController Gatekeeper**: Centralized session-based authentication prevents unauthorized URL access.
-* **Secure OTP Protocol**: 6-digit One-Time Password system for administrative recovery.
+* **Secure OTP Protocol**: Tokenized Email Recovery,Secure GUID-based link protocol for administrative credential resets.
 * **SQL Transaction Logic**: All critical employee updates are wrapped in ACID-compliant transactions to ensure data integrity.
 * **Session Shield**: Administrative identities are logged and monitored via encrypted system nodes.
 
